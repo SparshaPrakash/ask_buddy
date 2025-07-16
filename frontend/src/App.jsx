@@ -1,44 +1,38 @@
 import { useState } from 'react';
-import axios from 'axios';
 
 function App() {
-  const [question, setQuestion] = useState('');
-  const [answer, setAnswer] = useState('');
-  const [loading, setLoading] = useState(false);
+  const [messages, setMessages] = useState([]);
+  const [input, setInput] = useState("");
 
-  const askQuestion = async () => {
-    if (!question.trim()) return;
+  const sendMessage = async () => {
+    // Add user's message
+    const newMessages = [...messages, { role: 'user', text: input }];
+    setMessages(newMessages);
 
-    setLoading(true);
-    try {
-      const res = await axios.post('http://127.0.0.1:8000/chat', { question });
-      setAnswer(res.data.answer);
-    } catch (err) {
-      setAnswer("Something went wrong. Make sure the backend is running.");
-    }
-    setLoading(false);
+    // Send to backend
+    const res = await fetch('http://127.0.0.1:8000/chat', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ question: input })
+    });
+    const data = await res.json();
+
+    // Add bot's reply
+    setMessages([...newMessages, { role: 'bot', text: data.answer }]);
+    setInput("");
   };
 
   return (
-    <div style={{ maxWidth: '700px', margin: 'auto', padding: '2rem', fontFamily: 'Arial' }}>
-      <h1>AskBuddy 🤖</h1>
-      <textarea
-        rows={4}
-        cols={60}
-        placeholder="Ask me anything about your docs..."
-        value={question}
-        onChange={(e) => setQuestion(e.target.value)}
-      />
-      <br />
-      <button onClick={askQuestion} style={{ marginTop: '1rem' }}>
-        {loading ? 'Thinking...' : 'Ask'}
-      </button>
-      {answer && (
-        <>
-          <h3>Answer:</h3>
-          <p>{answer}</p>
-        </>
-      )}
+    <div>
+      <div className="chat-window">
+        {messages.map((m, i) => (
+          <div key={i} className={m.role === 'user' ? 'user-msg' : 'bot-msg'}>
+            {m.text}
+          </div>
+        ))}
+      </div>
+      <input value={input} onChange={e => setInput(e.target.value)} />
+      <button onClick={sendMessage}>Send</button>
     </div>
   );
 }

@@ -1,38 +1,43 @@
 from langchain_community.llms import Ollama
 from langchain_community.vectorstores import Chroma
-from langchain.embeddings import HuggingFaceEmbeddings
-from langchain.chains import RetrievalQA
-from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain_community.document_loaders import TextLoader
+from langchain.embeddings import HuggingFaceEmbeddings
+from langchain.text_splitter import RecursiveCharacterTextSplitter
+from langchain.chains import ConversationalRetrievalChain
+from langchain.memory import ConversationBufferMemory
 import os
 
-# Load a local text file (you can change this later to load multiple or from PDF)
+# ======== Load Documents ========
 DOC_PATH = "docs/sample.txt"
-
-# Load the document
 loader = TextLoader(DOC_PATH)
 documents = loader.load()
 
-# Split the document into chunks
+# ======== Split into chunks ========
 splitter = RecursiveCharacterTextSplitter(chunk_size=500, chunk_overlap=50)
 chunks = splitter.split_documents(documents)
 
-# Create embeddings using a HuggingFace model
+# ======== Create Embeddings ========
 embeddings = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
 
-# Create vector store using Chroma (stored in ./chroma_db folder)
+# ======== Vector Store (Chroma) ========
 vectordb = Chroma.from_documents(chunks, embedding=embeddings, persist_directory="./chroma_db")
-vectordb.persist()  # Optional: persist to disk
+vectordb.persist()
 
-# Load the LLM from Ollama
+# ======== LLM ========
 llm = Ollama(model="llama3")
 
-# Create RetrievalQA chain
-qa_chain = RetrievalQA.from_chain_type(
+# ======== Memory for Chat History ========
+memory = ConversationBufferMemory(memory_key="chat_history", return_messages=True)
+
+# ======== Conversational RAG Chain ========
+qa_chain = ConversationalRetrievalChain.from_llm(
     llm=llm,
-    retriever=vectordb.as_retriever()
+    retriever=vectordb.as_retriever(),
+    memory=memory,
+    verbose=False  # change to True if you want debug logs
 )
 
-# Function to answer questions
+# ======== Function to answer questions ========
 def answer_question(query: str) -> str:
-    return qa_chain.run(query)
+    result = qa_chain({"question": query})
+    return result["answer"]

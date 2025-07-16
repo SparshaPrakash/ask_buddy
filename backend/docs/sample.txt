@@ -1,3 +1,17 @@
-FastAPI is a modern Python web framework for building APIs with automatic OpenAPI documentation. 
-LangChain is a powerful library to build LLM-powered applications.
-Ollama allows you to run LLaMA and Mistral models locally for free.
+FastAPI is a modern and high-performance Python web framework used to build APIs quickly and easily. It automatically generates interactive API documentation using OpenAPI and Swagger UI.
+
+LangChain is a framework designed to simplify building applications that use large language models (LLMs). It provides tools for chaining multiple LLM calls, integrating with external data sources, and managing conversation history.
+
+LangChain supports key features like memory, which allows the model to remember previous parts of a conversation, and retrieval, which lets the model fetch relevant pieces of information from a knowledge base.
+
+LangChain can work with many LLM providers, such as OpenAI's GPT models, Hugging Face models, or local models like LLaMA running through Ollama.
+
+Ollama is a local runtime that lets you run powerful open-source models such as LLaMA 3 and Mistral directly on your own computer without sending data to external servers.
+
+Retrieval-Augmented Generation (RAG) is a technique that combines information retrieval with text generation. Instead of asking the model to answer from scratch, RAG retrieves relevant documents from a vector database and gives that context to the model.
+
+Using RAG with LangChain and Ollama allows you to build a chatbot that answers questions using your own documents, while also maintaining conversation history.
+
+You can add more documents to the knowledge base, and the chatbot will automatically learn to answer questions using that additional context.
+
+FastAPI, combined with LangChain and Ollama, makes it easy to build a local AI-powered application that can handle two-way conversations, remember context, and retrieve accurate answers.
