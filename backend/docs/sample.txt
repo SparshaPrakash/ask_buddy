@@ -6,6 +6,15 @@ LangChain supports key features like memory, which allows the model to remember 
 
 LangChain can work with many LLM providers, such as OpenAI's GPT models, Hugging Face models, or local models like LLaMA running through Ollama.
 
+LangChain also provides Agents, which let LLMs decide which tools to use and in what order to solve a problem.
+
+It supports advanced features like:
+- Prompt templates to manage dynamic prompts.
+- Chains that combine multiple steps of processing.
+- Tool integration to call APIs or run Python code during a conversation.
+
+By combining these, you can build intelligent assistants that do much more than simple Q&A.
+
 Ollama is a local runtime that lets you run powerful open-source models such as LLaMA 3 and Mistral directly on your own computer without sending data to external servers.
 
 Retrieval-Augmented Generation (RAG) is a technique that combines information retrieval with text generation. Instead of asking the model to answer from scratch, RAG retrieves relevant documents from a vector database and gives that context to the model.

@@ -2,6 +2,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from chat_engine import answer_question
+from chat_engine import reset_memory
 
 app = FastAPI()
 
@@ -23,3 +24,8 @@ class ChatRequest(BaseModel):
 async def chat(request: ChatRequest):
     answer = answer_question(request.question)
     return {"answer": answer}
+
+@app.post("/reset")
+async def reset():
+    reset_memory()
+    return {"status": "chat history cleared"}

@@ -41,3 +41,6 @@ qa_chain = ConversationalRetrievalChain.from_llm(
 def answer_question(query: str) -> str:
     result = qa_chain({"question": query})
     return result["answer"]
+
+def reset_memory():
+    memory.clear()
